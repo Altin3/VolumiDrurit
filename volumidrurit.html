@@ -1,53 +1,209 @@
 <!DOCTYPE html>
-<html>
+<html lang="sq">
 <head>
-	<title>Matja e volumit te drureve</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Volumi i Drurit</title>
+  <meta name="description" content="Kalkulator i volumit të drurit për përdorim në telefon dhe desktop." />
+  <meta name="theme-color" content="#1f5130" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
+  <style>
+    :root {
+      --bg: #f3f7f4;
+      --card: #ffffff;
+      --text: #193023;
+      --muted: #54695b;
+      --brand: #1f5130;
+      --brand-2: #2c7a47;
+      --border: #d6e4da;
+      --error: #b11d1d;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      color: var(--text);
+      background: linear-gradient(180deg, #e8f3eb 0%, var(--bg) 35%, var(--bg) 100%);
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 16px;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 520px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(24, 55, 37, 0.12);
+      padding: 20px;
+    }
+
+    h1 {
+      margin: 0 0 6px;
+      font-size: 1.45rem;
+      line-height: 1.3;
+    }
+
+    .subtitle {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.92rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    input, select, button {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      font-size: 1rem;
+      min-height: 46px;
+    }
+
+    input, select {
+      padding: 0 12px;
+      background: #fff;
+    }
+
+    input:focus, select:focus {
+      outline: 2px solid #9bc6ab;
+      border-color: #8dbf9f;
+    }
+
+    .actions {
+      margin-top: 6px;
+      display: grid;
+      gap: 10px;
+    }
+
+    button {
+      border: 0;
+      background: var(--brand);
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 0 14px;
+    }
+
+    button:hover { background: var(--brand-2); }
+
+    #result {
+      margin: 6px 0 0;
+      padding: 12px;
+      border-radius: 12px;
+      background: #edf6f0;
+      border: 1px solid #d2e7d8;
+      font-weight: 600;
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+    }
+
+    #result.error {
+      color: var(--error);
+      background: #fdeaea;
+      border-color: #f5cbcb;
+    }
+
+    .hint {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+  </style>
 </head>
 <body>
-	<h1>Matja e volumit te drureve</h1>
+  <main class="app">
+    <h1>Matja e volumit të drurëve</h1>
+    <p class="subtitle">Version i optimizuar për telefon (mund të shtohet në Home Screen).</p>
 
-	<label for="diametri">Diametri (cm):</label>
-	<input type="number" id="diametri" min="1" max="150" step="0.5" value="10">
+    <form class="grid" id="volumeForm">
+      <div>
+        <label for="diametri">Diametri (cm)</label>
+        <input type="number" id="diametri" min="1" max="150" step="0.5" value="10" required />
+      </div>
 
-	<label for="lartesia">Lartesia (m):</label>
-	<input type="number" id="lartesia" min="1" max="50" step="0.5" value="10">
+      <div>
+        <label for="lartesia">Lartësia (m)</label>
+        <input type="number" id="lartesia" min="1" max="50" step="0.5" value="10" required />
+      </div>
 
-	<label for="lloji">Lloji:</label>
-	<select id="lloji">
-		<option value="Ahu">Ahu</option>
-		<option value="Bungu">Bungu</option>
-		<option value="Hormoqi">Hormoqi</option>
-		<option value="Bredhi">Bredhi</option>
-	</select>
+      <div>
+        <label for="lloji">Lloji i drurit</label>
+        <select id="lloji" required>
+          <option value="Ahu">Ahu</option>
+          <option value="Bungu">Bungu</option>
+          <option value="Hormoqi">Hormoqi</option>
+          <option value="Bredhi">Bredhi</option>
+        </select>
+      </div>
 
-	<button onclick="calculateVolume()">Llogarit</button>
+      <div class="actions">
+        <button type="submit">Llogarit volumin</button>
+      </div>
+    </form>
 
-	<p id="result"></p>
+    <p id="result" aria-live="polite">Vendos vlerat dhe shtyp “Llogarit volumin”.</p>
+    <p class="hint">Formula: V = π × d² × h × f / 40000</p>
+  </main>
 
-	<script>
-		// Define form factors for different species in a JavaScript object
-		var formFactors = {"Ahu": 0.5, "Bungu": 0.45, "Hormoqi": 0.40, "Bredhi": 0.40};
+  <script>
+    const formFactors = { Ahu: 0.5, Bungu: 0.45, Hormoqi: 0.4, Bredhi: 0.4 };
 
-		// Define a function to calculate the volume
-		function calculateVolume() {
-			// Get the user inputs for diameter, height, and species
-			var diametri = parseFloat(document.getElementById("diametri").value);
-			var lartesia = parseFloat(document.getElementById("lartesia").value);
-			var lloji = document.getElementById("lloji").value;
+    function setResult(message, isError = false) {
+      const result = document.getElementById("result");
+      result.textContent = message;
+      result.classList.toggle("error", isError);
+    }
 
-			// Validate the species
-			if (!(lloji in formFactors)) {
-				document.getElementById("result").innerHTML = "Invalid species";
-				return;
-			}
+    function calculateVolume() {
+      const diametri = Number.parseFloat(document.getElementById("diametri").value);
+      const lartesia = Number.parseFloat(document.getElementById("lartesia").value);
+      const lloji = document.getElementById("lloji").value;
 
-			// Calculate volume using formula for tree volume and species-specific form factor
-			var formFactor = formFactors[lloji];
-			var volume = Math.PI * Math.pow(diametri, 2) * lartesia * formFactor / 40000;
+      if (!Number.isFinite(diametri) || !Number.isFinite(lartesia) || diametri <= 0 || lartesia <= 0) {
+        setResult("Ju lutem vendosni vlera të sakta për diametrin dhe lartësinë.", true);
+        return;
+      }
 
-			// Display the result
-			document.getElementById("result").innerHTML = "Volumi i " + lloji +"t" + " me diameter " + diametri.toFixed(2) + " cm dhe lartesia " + lartesia.toFixed(2) + " m eshte " + volume.toFixed(2) + " meter kub";
-		}
-	</script>
+      if (!(lloji in formFactors)) {
+        setResult("Lloji i drurit nuk njihet.", true);
+        return;
+      }
+
+      const formFactor = formFactors[lloji];
+      const volume = Math.PI * Math.pow(diametri, 2) * lartesia * formFactor / 40000;
+
+      setResult(`Volumi i ${lloji}-t me diametër ${diametri.toFixed(2)} cm dhe lartësi ${lartesia.toFixed(2)} m është ${volume.toFixed(3)} m³.`);
+    }
+
+    document.getElementById("volumeForm").addEventListener("submit", (event) => {
+      event.preventDefault();
+      calculateVolume();
+    });
+
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js").catch(() => {
+          // Service worker failure should not block the calculator.
+        });
+      });
+    }
+  </script>
 </body>
 </html>

@@ -1,0 +1,17 @@
+{
+  "name": "Volumi i Drurit",
+  "short_name": "VolumiDrurit",
+  "description": "Kalkulator i volumit të drurit për përdorim në terren.",
+  "start_url": "./volumidrurit.html",
+  "display": "standalone",
+  "background_color": "#f3f7f4",
+  "theme_color": "#1f5130",
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
